@@ -1,38 +1,154 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SSU.FLTT.Automat
 {
-    class Automat <TStateName, TMover>
+    class Automat<TStateName, TMover>
     {
+        private bool cleanStatesQueue;
+
         private Dictionary<TStateName,
             Dictionary<TMover, List<TStateName>>> TransitionDictionary;
 
         private Dictionary<TStateName, State<TStateName>> States;
 
         private Queue<State<TStateName>> StatesQueue;
+        private HashSet<State<TStateName>> StatesSet;
 
-        private Queue<TMover> InputMoversQueue;
-        private TMover currentMover;
-        
-        private void StateTransitionsToEnqueue(State<TStateName> startState)
+        private List<TMover> alphabet;
+        private TMover epsilonMover;
+
+        public Automat(TStateName startState,
+                       List<TMover> alphabet,
+                       Dictionary<TStateName, Dictionary<TMover, List<TStateName>>> transitionDictionary, 
+                       bool cleanStatesQueue = true)
         {
-            var endStateNames = TransitionDictionary[startState.Name][currentMover];
-            foreach (var endStateName in endStateNames)
-            {                
-                StatesQueue.Enqueue(States[endStateName]);
-            }
+            this.alphabet = alphabet;
+            this.cleanStatesQueue = cleanStatesQueue;
+            InitStatesAndTransitionDictionary(transitionDictionary);
+            InitNewStatesQueue(startState);
         }
 
-        private bool CanDoTransitions()
+        public Automat(TStateName startState,
+                       List<TMover> alphabet, TMover epsilonSymbol,
+                       Dictionary<TStateName, Dictionary<TMover, List<TStateName>>> transitionDictionary,
+                       bool cleanStatesQueue = true)
+            : this(startState, alphabet, transitionDictionary, cleanStatesQueue)
+        {
+            this.epsilonMover = epsilonSymbol;
+        }
+
+        private bool CanGetNewMoverFromString(out TMover mover, string input)
+        {
+            mover = default(TMover);
+
+            //пришла пустая строка
+            if (input.Length == 0)
+            {                
+                return false;
+            }
+            
+            bool canFlag = false;  
+
+            foreach (var el in alphabet)
+            {
+                if (input.StartsWith(el.ToString()))
+                {
+                    canFlag = true;
+                    mover = el;
+                    break;
+                }                    
+            }
+            return canFlag;
+        }
+        private Queue<TMover> InputCommandByAplhabet(string input) 
+        {
+            var tempQueue = new Queue<TMover>();
+            var inputBuilder = new StringBuilder(input);
+
+            while(CanGetNewMoverFromString(out TMover mover, inputBuilder.ToString()))
+            {
+                tempQueue.Enqueue(mover);
+                inputBuilder.Remove(0, mover.ToString().Length);
+            }
+
+            if(inputBuilder.Length > 0)
+            {
+                Console.WriteLine("Введена строка несоответствующая алфавиту автомата");
+                Console.Write($"Остаток строки: {inputBuilder}\n");
+                tempQueue.Clear();
+            }
+
+            return tempQueue;
+
+        }        
+        
+        private bool AddEpsilonTransitions(State<TStateName> startState, Queue<State<TStateName>> tempEpsilonsStates)
+        {
+            bool addFlag;
+            if (TransitionDictionary[startState.Name].TryGetValue(epsilonMover, out List<TStateName> endStateNames))
+            {
+
+                foreach (var endStateName in endStateNames)
+                {
+                    tempEpsilonsStates.Enqueue(States[endStateName]);
+                    StatesQueue.Enqueue(States[endStateName]);
+                }
+                addFlag = true;
+            }
+            else
+            {
+                addFlag = false;
+            }
+            return addFlag;
+            
+        }
+        private void AddAllEpsilonTransitions()
+        {
+            bool continueFlag;
+            var tempQueue = new Queue<State<TStateName>>(StatesQueue);  
+
+            do
+            {
+                continueFlag = false;
+                
+                while(tempQueue.Count > 0)
+                {
+                    if (AddEpsilonTransitions(tempQueue.Dequeue(), tempQueue))
+                    {
+                        continueFlag = true;
+                    }                    
+                }
+            }
+            while (continueFlag);
+
+            
+            
+
+        }
+
+        private void AddMoverTransitions(State<TStateName> startState, TMover currentMover)
+        {
+            if (TransitionDictionary[startState.Name].TryGetValue(currentMover, out List<TStateName> endStateNames))
+            {
+                foreach (var endStateName in endStateNames)
+                {
+                    StatesQueue.Enqueue(States[endStateName]);
+                }
+            }            
+        }
+
+        private void DoTransitions(TMover currentMover)
         {
             int countSteps = StatesQueue.Count;           
 
             if (currentMover == null)
             {
                 Console.WriteLine("Отсутсвтует инициатор");
-                return false;
+                return;
             }
 
             Console.WriteLine($"Для инициатора {currentMover} из состояний:");
@@ -40,22 +156,30 @@ namespace SSU.FLTT.Automat
             {
                 var state = StatesQueue.Dequeue();
                 state.StateDo();
-                StateTransitionsToEnqueue(state);
+                AddMoverTransitions(state, currentMover);
             }
-            Console.WriteLine("\n->");
 
-            bool goNext = false;
-            if (InputMoversQueue.Count > 0)
+            if(epsilonMover != null)
             {
-                currentMover = InputMoversQueue.Dequeue();
-                goNext = true;
+                AddAllEpsilonTransitions();
+            }            
+
+            if (cleanStatesQueue)
+            {
+                CleanStatesQueue();
             }
-            return goNext;
             
+            Console.WriteLine("\n->");            
+        }
+        private void CleanStatesQueue()
+        {
+            StatesSet = new HashSet<State<TStateName>>(StatesQueue);
+            StatesQueue = new Queue<State<TStateName>>(StatesSet);
         }
 
-        private void InitStatesQueue(TStateName startState)
+        private void InitStatesAndTransitionDictionary(Dictionary<TStateName, Dictionary<TMover, List<TStateName>>> transitionDictionary)
         {
+            TransitionDictionary = transitionDictionary;
             States = new Dictionary<TStateName, State<TStateName>>();
 
             foreach (var st in TransitionDictionary)
@@ -64,37 +188,44 @@ namespace SSU.FLTT.Automat
             }
 
             StatesQueue = new Queue<State<TStateName>>();
-            StatesQueue.Enqueue(States[startState]);
-            currentMover = InputMoversQueue.Dequeue();
-            Console.WriteLine($"Создана очередь состояний с начальным состоянием {StatesQueue.Peek().Name}") ;
         }
-
-        public Automat(TStateName startState,
-                       Dictionary<TStateName, Dictionary<TMover, List<TStateName>>> transitionDictionary,
-                       Queue<TMover> inputMoversQueue)
+        private void InitNewStatesQueue(TStateName startState)
         {
-            TransitionDictionary = transitionDictionary;
-            InputMoversQueue = inputMoversQueue;
-
-            InitStatesQueue(startState);
-        }
+            StatesQueue = new Queue<State<TStateName>>();
+            StatesQueue.Enqueue(States[startState]);
+            if (epsilonMover != null) 
+            {
+                AddAllEpsilonTransitions();
+            } 
+            Console.WriteLine($"Создана очередь состояний с начальным состоянием {StatesQueue.Peek().Name}");
+        }        
 
         private List<State<TStateName>> GetResult()
         {
             Console.WriteLine("Результирующие состояния");
-            var reultStates = StatesQueue.ToList<State<TStateName>>();
-            foreach (var state in reultStates)
+            var resultStates = StatesQueue.ToList<State<TStateName>>();
+            StatesQueue.Clear();
+            foreach (var state in resultStates)
             {
                 state.StateDo();
             }
             Console.WriteLine();
-            return reultStates;
+            return resultStates;
         }
 
-        public List<State<TStateName>> Run()
+        public List<State<TStateName>> Run(string input)
         {
-            while (CanDoTransitions()) { }
+            var inputQueue = InputCommandByAplhabet(input);
+            while (inputQueue.Count > 0)
+            {
+                DoTransitions(inputQueue.Dequeue());
+            }                
             return GetResult();
+        }
+        public List<State<TStateName>> Run(string input, TStateName startName)
+        {
+            InitNewStatesQueue(startName);
+            return Run(input);
         }
     }
 }
