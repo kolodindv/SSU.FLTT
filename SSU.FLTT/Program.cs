@@ -46,7 +46,6 @@ namespace SSU.FLTT
                     }
                 }
             };
-
             var automatNonDeterminateWays = new Dictionary<string, Dictionary<string, List<string>>>()
             {
                 {"S1" , new Dictionary<string, List<string>>()
@@ -57,7 +56,6 @@ namespace SSU.FLTT
                 },
                 {"S2" , new Dictionary<string, List<string>>()
                     {
-                        {"EPSILON", new List<string>(){"S4"}},
                         {"a", new List<string>(){"S4"}},
                         {"b", new List<string>(){"S2"}},
                     }
@@ -76,52 +74,53 @@ namespace SSU.FLTT
                 }
             };
 
-
-            var deterAlphabet = new List<char>() { 'a', 'b', 'c', 'd' };
-            var deterAuto = new Automat<string, char>("S1", deterAlphabet, automatDeterminateWays);
+            var deterAuto = new Automat<string, char>("S1", automatDeterminateWays);
 
             string deterString = "baacbbba";
-            deterAuto.Run(deterString);
+            deterAuto.Run(deterString);  
+            Console.WriteLine("\n\n");
+
+            var nonDeterAuto = new Automat<string, string>("S1", automatNonDeterminateWays, StatesQueueOptions.UnicWays);
+
+            string nonDeterString = "babab";
+            nonDeterAuto.Run(nonDeterString);
             Console.WriteLine();
-            //deterAuto.Run(deterString, "S2");
-            //Console.WriteLine();
-            //deterAuto.Run(deterString, "S3");
-            //Console.WriteLine();
-            //deterAuto.Run(deterString, "S4");
-
-            Console.WriteLine("\n");
-
-            var nonDeterAlphabet = new List<string>() { "a", "b" };
-            var nonDeterAuto = new Automat<string, string>("S1", nonDeterAlphabet, "EPSILON", automatNonDeterminateWays, cleanStatesQueue: false);
-
-            string nonDeterString = "bab";
+            nonDeterAuto.WorkOption = StatesQueueOptions.AllWays;
             nonDeterAuto.Run(nonDeterString);
 
-            Console.WriteLine("\n");
-
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-            };
-            string autoInfo = JsonSerializer.Serialize(automatNonDeterminateWays, options);
-            File.WriteAllText(AUTOMATH_INFO_PATH, autoInfo);
-            string auto = JsonSerializer.Serialize(nonDeterAuto, options);
-            File.WriteAllText(AUTOMATH_PATH, auto);
+            Console.WriteLine("\n\n");
 
             string p = @"D:\GitClone\SSU.FLTT\SSU.FLTT\automat-info.txt";
+            var nonDeterEpsAuto = new Automat<string, string>("S1", "EPSILON", p, StatesQueueOptions.UnicWays);
 
-            string jsonString = File.ReadAllText(p);
-            var tempo = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(jsonString);
+            string nonDeterEpsString = "babab";
+            nonDeterEpsAuto.Run(nonDeterEpsString);
+            Console.WriteLine();
+            nonDeterEpsAuto.WorkOption = StatesQueueOptions.AllWays;
+            nonDeterEpsAuto.Run(nonDeterEpsString);
+
+
+            //var options = new JsonSerializerOptions
+            //{
+            //    WriteIndented = true,
+            //};
+            //string autoInfo = JsonSerializer.Serialize(automatNonDeterminateWays, options);
+            //File.WriteAllText(AUTOMATH_INFO_PATH, autoInfo);
+            //string auto = JsonSerializer.Serialize(nonDeterAuto, options);
+            //File.WriteAllText(AUTOMATH_PATH, auto);
+
+            //
+
+            //var tempo = Automat<string, string>.getDictionaryFromJson(p);  
+
+            //string jsonString = File.ReadAllText(p);
+            //var tempo = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(jsonString);
+
+
 
             Console.OutputEncoding = Encoding.UTF8;
 
-            foreach (var el in tempo["S1"])
-            {
-
-                Console.WriteLine(el.Key);
-            }
-
+           
             Console.WriteLine("Press any key to exit");
             Console.ReadLine();
         }
