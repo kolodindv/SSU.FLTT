@@ -22,11 +22,7 @@ namespace SSU.FLTT.Lab1
         {
             throw new Exception($"{message} в позиции: {position}");
         }
-
-        //public static void Error(string message)
-        //{
-        //    Console.WriteLine(new Exception($"{message}")); 
-        //}
-
     }
+
+    
 }

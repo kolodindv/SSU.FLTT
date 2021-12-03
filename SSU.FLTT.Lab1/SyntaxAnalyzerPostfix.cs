@@ -11,9 +11,9 @@ namespace SSU.FLTT.Lab1
 		private List<Lexeme> _lexemeList;
 		private IEnumerator<Lexeme> _lexemeEnumerator;
 
-		public List<PostfixEntry> EntryList { get; set; }
+		private List<PostfixEntry> EntryList { get; set; }
 
-		public bool Run(string code)
+		public bool Run(string code, out List<PostfixEntry> postfixEntries)
 		{
 			EntryList = new List<PostfixEntry>();
 
@@ -24,9 +24,9 @@ namespace SSU.FLTT.Lab1
 				throw new Exception("Errors were occurred in lexical analyze");
 			}
 
-			return IsDoWhileStatement(analyser.Lexemes);
-
-
+			bool res = IsDoWhileStatement(analyser.Lexemes);
+			postfixEntries = new(EntryList);
+			return res;
 		}
 
 		private bool IsDoWhileStatement(List<Lexeme> lexemeList)

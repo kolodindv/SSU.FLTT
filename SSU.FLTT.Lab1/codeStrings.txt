@@ -1,12 +1,6 @@
 do 
-	input ind
-
-	ind= ind + 1
-	ind = ind+ ind
-
-	output ind
-
-loop while ind <= 20
-
-
-
+	i = i + 1
+	input s
+	output i
+	output s
+loop while i <= 9

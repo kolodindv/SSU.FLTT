@@ -17,7 +17,6 @@ namespace SSU.FLTT.Lab1
         }
 
         public bool Run(string text)
-
         {
             Lexemes = new List<Lexeme>();
 
@@ -157,7 +156,7 @@ namespace SSU.FLTT.Lab1
 
                             else //if (char.IsWhiteSpace(symbol))
                             {
-                                state = State.Start;
+                                state = State.Identifier;
                                 lexBufNext.Append(symbol);
                             }
 
