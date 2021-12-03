@@ -1,0 +1,12 @@
+do 
+	input ind
+
+	ind= ind + 1
+	ind = ind+ ind
+
+	output ind
+
+loop while ind <= 20
+
+
+

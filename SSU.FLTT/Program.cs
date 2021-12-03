@@ -99,10 +99,10 @@ namespace SSU.FLTT
 
             //Console.WriteLine("\n\n");
 
-            string p = @"D:\GitClone\SSU.FLTT\SSU.FLTT\automat-info_knd_epsi.txt";
+            string p = @"D:\GitClone\SSU.FLTT\SSU.FLTT\automat-info.txt";
             var nonDeterEpsAuto = new Automat<string, string>("S1", new List<string>() { "S3", "S4" }, "EPSILON", p, StatesQueueOptions.UnicWays);
 
-            string nonDeterEpsString = "ababbbabaaab";
+            string nonDeterEpsString = "ab";
             if (nonDeterEpsAuto.Run(nonDeterEpsString))
             {
                 Console.WriteLine("Подходит");
