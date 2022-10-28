@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSU.FLTT", "SSU.FLTT\SSU.FLTT.csproj", "{EF326027-B03C-47AA-BD51-8DEDFEA583AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSU.FLTT.Lab1", "SSU.FLTT.Lab1\SSU.FLTT.Lab1.csproj", "{9F80DB7A-28CB-4172-A512-90E6B8F90EB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSU.FLTT.Labs", "SSU.FLTT.Lab1\SSU.FLTT.Labs.csproj", "{9F80DB7A-28CB-4172-A512-90E6B8F90EB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

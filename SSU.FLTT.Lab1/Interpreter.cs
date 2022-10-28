@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace SSU.FLTT.Lab1
+namespace SSU.FLTT.Labs
 {
     class Interpreter
     {
@@ -14,12 +13,12 @@ namespace SSU.FLTT.Lab1
         }
 
         private List<PostfixEntry> _entryList;
-        public List<PostfixEntry> EntryList 
-        { 
-            get 
+        public List<PostfixEntry> EntryList
+        {
+            get
             {
                 return _entryList;
-            }            
+            }
         }
 
         private Stack<PostfixEntry> _stack;
@@ -43,7 +42,6 @@ namespace SSU.FLTT.Lab1
                     FormatOut($"{GetEntryString(entry)}");
                 }
                 Console.WriteLine();
-                //Console.Write("ptr: ");
                 for (int i = 0; i < EntryList.Count + 1; i++)
                 {
                     FormatOut($"prt{i}");
@@ -61,7 +59,7 @@ namespace SSU.FLTT.Lab1
         }
 
         private void Interpret()
-        { 
+        {
             int temp;
             int pos = 0;
             Log(pos);
@@ -101,31 +99,35 @@ namespace SSU.FLTT.Lab1
                             pos++;
                             break;
                         case Cmd.AND:
-                            PushVal((PopVal() != 0 && PopVal() != 0) ? 1 : 0);
+                            PushVal(PopVal() != 0 && PopVal() != 0 ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.OR:
-                            PushVal((PopVal() != 0 || PopVal() != 0) ? 1 : 0);
+                            PushVal(PopVal() != 0 || PopVal() != 0 ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.CMPE:
-                            PushVal((PopVal() == PopVal()) ? 1 : 0);
+                            PushVal(PopVal() == PopVal() ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.CMPNE:
-                            PushVal((PopVal() != PopVal()) ? 1 : 0);
+                            PushVal(PopVal() != PopVal() ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.CMPL:
-                            PushVal((PopVal() > PopVal()) ? 1 : 0);
+                            PushVal(PopVal() > PopVal() ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.CMPLE:
-                            PushVal((PopVal() >= PopVal()) ? 1 : 0);
+                            PushVal(PopVal() >= PopVal() ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.CMPG:
-                            PushVal((PopVal() < PopVal()) ? 1 : 0);
+                            PushVal(PopVal() < PopVal() ? 1 : 0);
+                            pos++;
+                            break;
+                        case Cmd.CMPGE:
+                            PushVal(PopVal() <= PopVal() ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.INPUT:
@@ -201,7 +203,8 @@ namespace SSU.FLTT.Lab1
 
         private void Log(int pos)
         {
-            Logs.Add($"Позиция: {pos} | Элемент: {GetEntryString(EntryList[pos])} | Стек: {GetStackState()} | Значения переменных: {GetVarValues()}");
+
+            Logs.Add($"Позиция: {pos} | Элемент: {GetEntryString(EntryList[pos])} | Значения переменных: {GetVarValues()} | Стек: {GetStackState()}");
         }
 
         private string GetEntryString(PostfixEntry entry)
@@ -264,6 +267,4 @@ namespace SSU.FLTT.Lab1
             }
         }
     }
-
-
 }

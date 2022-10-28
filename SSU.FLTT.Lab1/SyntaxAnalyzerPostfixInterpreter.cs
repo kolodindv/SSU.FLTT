@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SSU.FLTT.Lab1
+namespace SSU.FLTT.Labs
 {
     class SyntaxAnalyzerPostfixInterpreter
     {
@@ -382,6 +382,10 @@ namespace SSU.FLTT.Lab1
                             break;
                         case Cmd.CMPG:
                             PushVal((PopVal() < PopVal()) ? 1 : 0);
+                            pos++;
+                            break;
+                        case Cmd.CMPGE:
+                            PushVal((PopVal() <= PopVal()) ? 1 : 0);
                             pos++;
                             break;
                         case Cmd.INPUT:

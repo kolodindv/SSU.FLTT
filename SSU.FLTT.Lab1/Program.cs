@@ -3,36 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SSU.FLTT.Lab1
+namespace SSU.FLTT.Labs
 {
     class Program
     {
-        static List<string> codeStrings = new List<string>
-            {
-                "do",
-                //"	input ind",
-                //"	input 13",
-                "	a=12",
-                //"	a= (a + 2) + b + c * (12 + a)",
-                "	a=a+ 5",
-
-                "	output a",
-               // "",
-               // "	ind = ind+ ind - while1",
-               // //"	ind <> ind",
-               // "	ind = 17",
-               //// "	ind > ind",
-               //// "	ind == 12",
-               // "",
-               // "	output ind",
-                "",
-                "loop while a <= 20"
-            };
-
         static void FormatOut(string str)
         {
             Console.Write("{0, 6} ", str);
         }
+
+        static List<string> codeStrings = new List<string>
+            {
+                "do ",
+                "	input a",
+                "	output a",
+                "	a = a - 10",
+                "	output 0",
+                "loop while a <> 0"
+            };
 
         static void WriteCode()
         {
@@ -77,6 +65,7 @@ namespace SSU.FLTT.Lab1
             try
             {
                 var result = analyser.Run(string.Join(Environment.NewLine, codeStrings));
+                Console.WriteLine("Result:");
                 Console.WriteLine(result ? "Okay" : "It is not a while statement");
             }
             catch (Exception ex)
@@ -92,6 +81,7 @@ namespace SSU.FLTT.Lab1
             try
             {
                 var result = analyser.Run(string.Join(Environment.NewLine, codeStrings), out List<PostfixEntry> entryList);
+                Console.WriteLine("Result:");
                 Console.WriteLine(result ? "Okay" : "It is not a while statement");
                 foreach (var entry in entryList)
                 {
@@ -114,7 +104,7 @@ namespace SSU.FLTT.Lab1
             Console.WriteLine();
         }
 
-        static void Lab4()
+        static void Lab4Old()
         {
             using var stream = new StreamReader(@"..\..\..\codeStrings.txt");
             var code = stream.ReadToEnd();
@@ -147,10 +137,11 @@ namespace SSU.FLTT.Lab1
             }
         }
 
-        static void Lab4UPdated()
+        static void Lab4()
         {
             using var stream = new StreamReader(@"..\..\..\codeStrings.txt");
             var code = stream.ReadToEnd();
+            Console.WriteLine("Code from file:");
             Console.WriteLine(code);
 
             Interpreter interpreter = new();
@@ -169,13 +160,32 @@ namespace SSU.FLTT.Lab1
             //Lab1();
             //Lab2();
             //Lab3();
-            //Lab4();
-            //Lab4UPdated();
+            Lab4();
         }
     }
 }
 
 
+//{
+//       "do",
+//       //"	input ind",
+//       //"	input 13",
+//       "	a= 12",
+//       //"	a= (a + 2) + b + c * (12 + a)",
+//       "	a=a+ 5",
+
+//       "	output a",
+//      // "",
+//      // "	ind = ind+ ind - while1",
+//      // //"	ind <> ind",
+//      // "	ind = 17",
+//      //// "	ind > ind",
+//      //// "	ind == 12",
+//      // "",
+//      // "	output ind",
+//       "",
+//       "loop while a >= 20"
+//   };
 
 
 

@@ -1,6 +1,6 @@
 do 
-	i = i + 1
-	input s
+	i = i + 2
 	output i
-	output s
-loop while i <= 9
+	i = i / 2
+	output i
+loop while i > 12

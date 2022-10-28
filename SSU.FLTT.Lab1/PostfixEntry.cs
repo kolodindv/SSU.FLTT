@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SSU.FLTT.Lab1
+﻿namespace SSU.FLTT.Labs
 {
     class PostfixEntry
     {
@@ -14,6 +8,5 @@ namespace SSU.FLTT.Lab1
         public string Value { get; set; }
         public int? CurrentValue { get; set; }
         public int? CmdPtr { get; set; }
-
     }
 }

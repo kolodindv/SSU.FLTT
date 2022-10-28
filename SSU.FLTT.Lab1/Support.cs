@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SSU.FLTT.Lab1
+namespace SSU.FLTT.Labs
 {
-    public enum LexemeType { Do, While, Loop, Not, And, Or, Input, Output, Relation, ArithmeticOperation, Assignment, Undefined }
+    public enum LexemeType { Do, Loop, While, Not, And, Or, Input, Output, Relation, ArithmeticOperation, Assignment, Undefined }
 
     public enum LexemeClass { Keyword, Identifier, Constant, SpecialSymbols, Undefined }
 
@@ -22,7 +18,5 @@ namespace SSU.FLTT.Lab1
         {
             throw new Exception($"{message} в позиции: {position}");
         }
-    }
-
-    
+    }    
 }
